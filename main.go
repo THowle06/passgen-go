@@ -15,6 +15,19 @@ func main() {
 
 	flag.Parse()
 
+	if *count <= 0 {
+		panic("count must be > 0")
+	}
+
+	enabled := 3
+	if !*noSymbols {
+		enabled++
+	}
+
+	if *requireEach && *length < enabled {
+		panic("length too short for required character classes")
+	}
+
 	policy := generator.Policy{
 		Length:           *length,
 		IncludeUpper:     true,
@@ -29,6 +42,8 @@ func main() {
 	}
 
 	if *showEntropy {
-
+		entropy := generator.CalculateEntropy(policy)
+		strength := generator.ClassifyEntropy(entropy)
+		fmt.Printf("\nEntropy: %.2f bits (%s)\n", entropy, strength)
 	}
 }
