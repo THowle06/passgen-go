@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"passgen-go/generator"
 )
 
 func main() {
@@ -14,5 +15,20 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println(*length, *count, *noSymbols, *requireEach, *showEntropy)
+	policy := generator.Policy{
+		Length:           *length,
+		IncludeUpper:     true,
+		IncludeLower:     true,
+		IncludeDigits:    true,
+		IncludeSymbols:   !*noSymbols,
+		RequireEachClass: *requireEach,
+	}
+
+	for i := 0; i < *count; i++ {
+		fmt.Println(generator.Generate(policy))
+	}
+
+	if *showEntropy {
+
+	}
 }
