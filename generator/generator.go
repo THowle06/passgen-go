@@ -2,6 +2,7 @@ package generator
 
 import (
 	"crypto/rand"
+	"math"
 	"math/big"
 )
 
@@ -69,4 +70,32 @@ func Generate(policy Policy) string {
 	shuffle(password)
 
 	return string(password)
+}
+
+func CalculateEntropy(policy Policy) float64 {
+	charsetSize := 0
+
+	if policy.IncludeUpper {
+		charsetSize += 26
+	}
+	if policy.IncludeLower {
+		charsetSize += 26
+	}
+	if policy.IncludeDigits {
+		charsetSize += 10
+	}
+	if policy.IncludeSymbols {
+		charsetSize += len(symbols)
+	}
+
+	return float64(policy.Length) * math.Log2(float64(charsetSize))
+}
+
+func ClassifyEntropy(entropy float64) string {
+	if entropy < 40 {
+		return "Weak"
+	} else if entropy < 80 {
+		return "Moderate"
+	}
+	return "Strong"
 }
